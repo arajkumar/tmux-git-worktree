@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Removes the worktree of the current window, then kills the window.
+# Usage: tmux-worktree-rm <pane-path> <window-id>
+set -e
+path=$1 win=$2
+
+root=$(git -C "$path" rev-parse --show-toplevel)
+main=$(cd "$(git -C "$path" rev-parse --git-common-dir)/.." && pwd)
+
+case $root in
+  "$main/.worktrees/"*) ;;
+  *) tmux display-message "worktree-rm: not a .worktrees worktree"; exit 1 ;;
+esac
+
+if git -C "$main" worktree remove "$root"; then
+  tmux kill-window -t "$win"
+else
+  tmux display-message "worktree-rm: worktree has changes, not removed"
+fi

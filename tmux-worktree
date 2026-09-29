@@ -16,5 +16,6 @@ if [ ! -d "$dir" ]; then
   fi
 fi
 tmux rename-window "$name" 2>/dev/null || true
+tmux set-window-option automatic-rename off 2>/dev/null || true
 cd "$dir"
 exec "${SHELL:-/bin/sh}"
