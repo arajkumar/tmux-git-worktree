@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Runs as a tmux window's process: creates/opens a git worktree, then execs a shell in it.
+# Usage: tmux-worktree [branch]
+set -e
+trap 's=$?; [ $s -ne 0 ] && read -rp "failed, press enter to close"' EXIT
+
+root=$(git rev-parse --show-toplevel)
+name=${1:-origin-HEAD}
+dir="$root/.worktrees/$name"
+
+if [ ! -d "$dir" ]; then
+  if [ -n "$1" ] && ! git -C "$root" show-ref --verify --quiet "refs/heads/$1"; then
+    git -C "$root" worktree add -b "$1" "$dir" origin/HEAD
+  else
+    git -C "$root" worktree add "$dir" "${1:-origin/HEAD}"
+  fi
+fi
+tmux rename-window "$name" 2>/dev/null || true
+cd "$dir"
+exec "${SHELL:-/bin/sh}"
