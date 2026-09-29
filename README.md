@@ -1,4 +1,4 @@
-# tmux-worktree
+# tmux-git-worktree
 
 Open a git worktree in a new tmux window.
 
