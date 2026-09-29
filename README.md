@@ -7,7 +7,7 @@ Open a git worktree in a new tmux window.
 Add to `tmux.conf`:
 
 ```
-set -g @plugin 'arajkumar/tmux-worktree'
+set -g @plugin 'arajkumar/tmux-git-worktree'
 ```
 
 Press `prefix + I` to install.
