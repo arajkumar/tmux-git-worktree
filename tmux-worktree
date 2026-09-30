@@ -5,14 +5,19 @@ set -e
 trap 's=$?; [ $s -ne 0 ] && read -rp "failed, press enter to close"' EXIT
 
 root=$(cd "$(git rev-parse --git-common-dir)/.." && pwd)
-name=${1:-origin-HEAD}
+if [ -n "$1" ]; then
+  name=$1 ref=$1
+else
+  ref=$(git rev-parse --abbrev-ref origin/HEAD)
+  name=${ref#origin/}
+fi
 dir="$root/.worktrees/$name"
 
 if [ ! -d "$dir" ]; then
   if [ -n "$1" ] && ! git -C "$root" show-ref --verify --quiet "refs/heads/$1"; then
     git -C "$root" worktree add -b "$1" "$dir" origin/HEAD
   else
-    git -C "$root" worktree add "$dir" "${1:-origin/HEAD}"
+    git -C "$root" worktree add "$dir" "$ref"
   fi
 fi
 tmux rename-window "$name" 2>/dev/null || true
