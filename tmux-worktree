@@ -4,7 +4,7 @@
 set -e
 trap 's=$?; [ $s -ne 0 ] && read -rp "failed, press enter to close"' EXIT
 
-root=$(git rev-parse --show-toplevel)
+root=$(cd "$(git rev-parse --git-common-dir)/.." && pwd)
 name=${1:-origin-HEAD}
 dir="$root/.worktrees/$name"
 
